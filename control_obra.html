@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Structura - Sistema de control de cómputos métricos, proveedores y flujo de pagos para proyectos de construcción.">
+  <title>Structura - Control de Obras y Pagos</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chart.js for beautiful charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Local CSS -->
+  <link rel="stylesheet" href="control_obra.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar-nav">
+      <div class="brand-section">
+        <div class="brand-logo">S</div>
+        <div class="brand-info-wrapper">
+          <h1 class="brand-name">STRUCTURA</h1>
+          <div class="brand-tag">Control de Obra</div>
+        </div>
+      </div>
+      
+      <nav>
+        <ul class="nav-menu">
+          <li>
+            <a href="#" class="nav-item active" data-tab="dashboard" id="nav-dashboard">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+              <span>Panel General</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item" data-tab="computos" id="nav-computos">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span>Cómputos Métricos</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item" data-tab="materiales" id="nav-materiales">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+              <span>Materiales</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item" data-tab="proveedores" id="nav-proveedores">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <span>Proveedores</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item" data-tab="pagos" id="nav-pagos">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <span>Flujo de Pagos</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item" data-tab="reportes" id="nav-reportes">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+              <span>Reportes</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- User Card section -->
+      <div class="user-card">
+        <div class="user-title">Responsable</div>
+        <div class="user-info">
+          <div class="user-avatar" id="user-avatar-tag">IR</div>
+          <div class="user-details">
+            <span class="user-name" id="username-display">Ing. Residente</span>
+            <span class="user-role" id="userrole-display">Director de Obra</span>
+          </div>
+        </div>
+        <button class="theme-toggle-btn" id="btn-theme-toggle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <span id="theme-toggle-text">Modo Claro</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Content Header -->
+      <header class="content-header">
+        <div class="header-title-section">
+          <h2 class="header-title" id="page-title-header">Panel de Control</h2>
+          <p class="header-subtitle" id="page-subtitle-header">Resumen general y métricas operativas de la obra.</p>
+        </div>
+        <div class="header-actions">
+          <div class="btn btn-secondary" style="cursor: default; font-weight: 500;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span id="project-badge">Obra: Mi Proyecto</span>
+          </div>
+          <button class="btn btn-secondary" id="btn-config-project" title="Configuración del Proyecto y Alertas">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <span>Configurar</span>
+          </button>
+          <button class="btn btn-secondary" id="btn-export-db" title="Exportar base de datos a JSON">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <span>Respaldar</span>
+          </button>
+          <button class="btn btn-secondary" id="btn-import-db" title="Importar base de datos desde JSON">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Cargar</span>
+          </button>
+          <input type="file" id="file-db-input" accept=".json" style="display: none;">
+        </div>
+      </header>
+
+      <!-- TAB: DASHBOARD -->
+      <section class="tab-panel active" id="dashboard-tab">
+        <!-- KPI Row -->
+        <div class="kpi-grid">
+          <!-- Card 1: Total Presupuestado -->
+          <div class="kpi-card primary">
+            <div class="kpi-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <span class="kpi-label">Presupuesto Base</span>
+            <div class="kpi-value" id="kpi-total-budget">$0.00</div>
+            <div class="kpi-footer">
+              <span>Monto total programado</span>
+            </div>
+          </div>
+          <!-- Card 2: Monto Ejecutado -->
+          <div class="kpi-card success">
+            <div class="kpi-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+            </div>
+            <span class="kpi-label">Presupuesto Ejecutado</span>
+            <div class="kpi-value" id="kpi-executed-budget">$0.00</div>
+            <div class="kpi-footer">
+              <span class="kpi-trend-up" id="kpi-progress-pct">0%</span>
+              <span>de avance físico general</span>
+            </div>
+          </div>
+          <!-- Card 3: Total Pagado -->
+          <div class="kpi-card info">
+            <div class="kpi-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <span class="kpi-label">Pagos Realizados</span>
+            <div class="kpi-value" id="kpi-paid-amount">$0.00</div>
+            <div class="kpi-footer">
+              <span id="kpi-paid-ratio">0% de lo ejecutado</span>
+            </div>
+          </div>
+          <!-- Card 4: Cuentas por Pagar (Pendientes/Autorizados) -->
+          <div class="kpi-card warning">
+            <div class="kpi-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            </div>
+            <span class="kpi-label">Cuentas por Pagar</span>
+            <div class="kpi-value" id="kpi-pending-payments">$0.00</div>
+            <div class="kpi-footer">
+              <span class="kpi-trend-down" id="kpi-pending-count">0 pagos</span>
+              <span>pendientes de desembolso</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Split Grid (Charts & Status) -->
+        <div class="dashboard-split">
+          <!-- Main Progress Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Avance Financiero por Capítulo</h3>
+              <div class="chart-legend-indicator" style="font-size: 0.8rem; color: var(--text-secondary);">Presupuestado vs Ejecutado</div>
+            </div>
+            <div class="chart-body">
+              <canvas id="chart-budget-comparison"></canvas>
+            </div>
+          </div>
+          
+          <!-- Category Split Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Distribución del Presupuesto</h3>
+            </div>
+            <div class="chart-body">
+              <canvas id="chart-budget-distribution"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alertas de Materiales y Actividades Recientes -->
+        <div class="dashboard-split">
+          <!-- Material Alerts Card -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Alertas Críticas de Materiales</h3>
+              <span class="material-stock-badge critical" id="alert-materials-count">0 Alertas</span>
+            </div>
+            <div class="table-responsive" style="max-height: 280px;">
+              <table class="table-computos" id="table-dashboard-materials">
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Stock Actual</th>
+                    <th>Mínimo Req.</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-materials-list">
+                  <!-- JS populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Activity List -->
+          <div class="activity-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Historial de Operaciones</h3>
+            </div>
+            <div class="activity-list" id="activity-timeline">
+              <!-- JS populated -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: COMPUTOS METRICOS -->
+      <section class="tab-panel" id="computos-tab">
+        <div class="filter-row">
+          <div class="search-input-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="search-input" id="search-computos" placeholder="Buscar partida o descripción...">
+          </div>
+          <div class="filters-group">
+            <button class="btn btn-primary" id="btn-add-chapter">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Nuevo Capítulo</span>
+            </button>
+            <button class="btn btn-secondary" id="btn-add-partida">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Añadir Partida</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="chapters-container-accordion" id="chapters-accordion-root">
+          <!-- Accordion chapters will be generated by JS -->
+        </div>
+      </section>
+
+      <!-- TAB: MATERIALES -->
+      <section class="tab-panel" id="materiales-tab">
+        <div class="filter-row">
+          <div class="search-input-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="search-input" id="search-materials" placeholder="Buscar material o proveedor...">
+          </div>
+          <div class="filters-group">
+            <select class="filter-select" id="filter-material-stock">
+              <option value="all">Todos los Niveles</option>
+              <option value="ok">Stock Óptimo</option>
+              <option value="warning">Reorden Requerido</option>
+              <option value="critical">Crítico (Stock Bajo)</option>
+            </select>
+            <button class="btn btn-primary" id="btn-add-material">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Registrar Material</span>
+            </button>
+            <button class="btn btn-secondary" id="btn-request-material-buy">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Solicitar Abastecimiento</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="materials-grid" id="materials-cards-grid">
+          <!-- JS populated -->
+        </div>
+      </section>
+
+      <!-- TAB: PROVEEDORES -->
+      <section class="tab-panel" id="proveedores-tab">
+        <div class="filter-row">
+          <div class="search-input-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="search-input" id="search-providers" placeholder="Buscar proveedor, categoría o RIF...">
+          </div>
+          <div class="filters-group">
+            <button class="btn btn-primary" id="btn-add-provider">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Añadir Proveedor</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="providers-grid" id="providers-cards-grid">
+          <!-- JS populated -->
+        </div>
+      </section>
+
+      <!-- TAB: FLUJO DE PAGOS -->
+      <section class="tab-panel" id="pagos-tab">
+        <div class="filter-row">
+          <div class="search-input-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="search-input" id="search-payments" placeholder="Buscar solicitud de pago...">
+          </div>
+          <div class="filters-group">
+            <select class="filter-select" id="filter-payment-category">
+              <option value="all">Todas las Categorías</option>
+              <option value="valuacion">Valuaciones de Obra</option>
+              <option value="material">Compra de Materiales</option>
+              <option value="proveedor">Equipamiento y Subcontratos</option>
+            </select>
+            <button class="btn btn-primary" id="btn-create-payment-req">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Nueva Solicitud de Pago</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Kanban Pipeline Board -->
+        <div class="kanban-board">
+          <!-- Column 1: Pendiente de Aprobación -->
+          <div class="kanban-column" data-status="pendiente">
+            <div class="kanban-column-header">
+              <div class="kanban-column-title-group">
+                <span class="kanban-column-indicator"></span>
+                <span class="kanban-column-title">Pendiente Valuación</span>
+              </div>
+              <span class="kanban-column-counter" id="counter-pendiente">0</span>
+            </div>
+            <div class="kanban-cards-container" id="container-pendiente" ondragover="allowDrop(event)" ondrop="drop(event, 'pendiente')">
+              <!-- JS Populated cards -->
+            </div>
+          </div>
+
+          <!-- Column 2: Aprobado por Ingeniería -->
+          <div class="kanban-column" data-status="aprobado">
+            <div class="kanban-column-header">
+              <div class="kanban-column-title-group">
+                <span class="kanban-column-indicator"></span>
+                <span class="kanban-column-title">Aprobado Ingeniería</span>
+              </div>
+              <span class="kanban-column-counter" id="counter-aprobado">0</span>
+            </div>
+            <div class="kanban-cards-container" id="container-aprobado" ondragover="allowDrop(event)" ondrop="drop(event, 'aprobado')">
+              <!-- JS Populated cards -->
+            </div>
+          </div>
+
+          <!-- Column 3: Autorizado para Pago (Listo en Caja) -->
+          <div class="kanban-column" data-status="autorizado">
+            <div class="kanban-column-header">
+              <div class="kanban-column-title-group">
+                <span class="kanban-column-indicator"></span>
+                <span class="kanban-column-title">Listo para Caja</span>
+              </div>
+              <span class="kanban-column-counter" id="counter-autorizado">0</span>
+            </div>
+            <div class="kanban-cards-container" id="container-autorizado" ondragover="allowDrop(event)" ondrop="drop(event, 'autorizado')">
+              <!-- JS Populated cards -->
+            </div>
+          </div>
+
+          <!-- Column 4: Pagado -->
+          <div class="kanban-column" data-status="pagado">
+            <div class="kanban-column-header">
+              <div class="kanban-column-title-group">
+                <span class="kanban-column-indicator"></span>
+                <span class="kanban-column-title">Pagados / Histórico</span>
+              </div>
+              <span class="kanban-column-counter" id="counter-pagado">0</span>
+            </div>
+            <div class="kanban-cards-container" id="container-pagado" ondragover="allowDrop(event)" ondrop="drop(event, 'pagado')">
+              <!-- JS Populated cards -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: REPORTES -->
+      <section class="tab-panel" id="reportes-tab">
+        <div class="report-controls-panel">
+          <h3 class="chart-title">Configuración del Reporte de Obra</h3>
+          <div class="filters-group" style="flex-wrap: wrap;">
+            <div class="form-group" style="min-width: 200px;">
+              <label class="form-label" for="report-select-type">Tipo de Reporte</label>
+              <select class="filter-select" id="report-select-type" style="width: 100%;">
+                <option value="valuacion_general">Valuación e Inventario General</option>
+                <option value="pagos_proveedores">Historial de Pagos y Cuentas por Pagar</option>
+              </select>
+            </div>
+            <div class="form-group" style="min-width: 200px;" id="report-prov-filter-group">
+              <label class="form-label" for="report-select-provider">Filtrar por Proveedor</label>
+              <select class="filter-select" id="report-select-provider" style="width: 100%;">
+                <option value="all">Todos los Proveedores</option>
+                <!-- JS populated -->
+              </select>
+            </div>
+            <div class="form-group" style="align-self: flex-end;">
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-primary" id="btn-print-report">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                  <span>Imprimir / PDF</span>
+                </button>
+                <button class="btn btn-secondary" id="btn-csv-report">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  <span>Exportar CSV</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Print View Mockup Paper -->
+        <div class="report-preview-box" id="printable-report-area">
+          <div class="report-doc-header">
+            <div class="report-doc-company">
+              <h2 id="report-company-name">STRUCTURA</h2>
+              <span style="font-size: 0.8rem; color: #475569; display: block;" id="report-project-name">Proyecto: Mi Proyecto</span>
+              <span style="font-size: 0.8rem; color: #475569; display: block;" id="report-user-name">Responsable: Ing. Residente</span>
+            </div>
+            <div class="report-doc-meta">
+              <span><strong>Valuación Nro:</strong> <span id="report-doc-number">VAL-005</span></span>
+              <span><strong>Fecha:</strong> <span id="report-doc-date">26/05/2026</span></span>
+              <span><strong>Emitido por:</strong> Ing. Residente de Obra</span>
+            </div>
+          </div>
+
+          <h3 class="report-doc-title" id="report-doc-title-text">VALUACIÓN DE OBRA E INVENTARIO GENERAL</h3>
+
+          <div class="table-responsive">
+            <table class="report-table" id="report-dynamic-table">
+              <!-- JS populated table -->
+            </table>
+          </div>
+
+          <div class="report-signatures">
+            <div class="signature-line">
+              <div class="signature-stamp-placeholder" id="report-sig-stamp-engineer">
+                <!-- SVG Stamp dynamic -->
+              </div>
+              <strong>Ing. Residente</strong>
+              <span>Inspección de Campo</span>
+            </div>
+            <div class="signature-line">
+              <div class="signature-stamp-placeholder" id="report-sig-stamp-manager">
+                <!-- SVG Stamp dynamic -->
+              </div>
+              <strong>Gerente de Proyecto</strong>
+              <span>Control de Costos</span>
+            </div>
+            <div class="signature-line">
+              <div class="signature-stamp-placeholder" id="report-sig-stamp-admin">
+                <!-- SVG Stamp dynamic -->
+              </div>
+              <strong>Administración Central</strong>
+              <span>Aprobación de Pago / Caja</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL: AÑADIR CAPÍTULO -->
+  <div class="modal-backdrop" id="modal-chapter">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Nuevo Capítulo</h3>
+        <button class="modal-close-btn" data-modal="modal-chapter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="chapter-name-input">Nombre del Capítulo / Etapa</label>
+          <input type="text" class="form-control" id="chapter-name-input" placeholder="Ej. Albañilería, Instalaciones Eléctricas...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-chapter">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-chapter">Guardar Capítulo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AÑADIR PARTIDA -->
+  <div class="modal-backdrop" id="modal-partida">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="partida-modal-title">Registrar Nueva Partida</h3>
+        <button class="modal-close-btn" data-modal="modal-partida">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="partida-edit-id">
+        <div class="form-group">
+          <label class="form-label" for="partida-chapter-select">Capítulo Asociado</label>
+          <select class="form-control" id="partida-chapter-select">
+            <!-- JS populated -->
+          </select>
+        </div>
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="partida-code-input">Código de Partida</label>
+            <input type="text" class="form-control" id="partida-code-input" placeholder="Ej. AL-01">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="partida-unit-input">Unidad de Medida</label>
+            <input type="text" class="form-control" id="partida-unit-input" placeholder="Ej. m², m³, kg, Und, Glb">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="partida-desc-input">Descripción detallada</label>
+          <textarea class="form-control" id="partida-desc-input" rows="3" placeholder="Descripción de los trabajos a ejecutar..."></textarea>
+        </div>
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="partida-qty-input">Cantidad Presupuestada</label>
+            <input type="number" step="0.01" class="form-control" id="partida-qty-input" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="partida-price-input">Precio Unitario ($)</label>
+            <input type="number" step="0.01" class="form-control" id="partida-price-input" placeholder="0.00">
+          </div>
+        </div>
+        <div class="form-group" id="partida-executed-group" style="display: none;">
+          <label class="form-label" for="partida-executed-input">Cantidad Ejecutada Actual</label>
+          <input type="number" step="0.01" class="form-control" id="partida-executed-input" value="0">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-partida">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-partida">Guardar Partida</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRAR MATERIAL -->
+  <div class="modal-backdrop" id="modal-material">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Material en Inventario</h3>
+        <button class="modal-close-btn" data-modal="modal-material">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="mat-name-input">Nombre del Material</label>
+          <input type="text" class="form-control" id="mat-name-input" placeholder="Ej. Cemento Portland, Cabilla de 1/2''...">
+        </div>
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="mat-unit-input">Unidad de Medida</label>
+            <input type="text" class="form-control" id="mat-unit-input" placeholder="Ej. Saco, Ton, Und, Kg">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="mat-price-input">Precio Unitario ($)</label>
+            <input type="number" step="0.01" class="form-control" id="mat-price-input" placeholder="0.00">
+          </div>
+        </div>
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="mat-stock-input">Stock Inicial</label>
+            <input type="number" step="0.01" class="form-control" id="mat-stock-input" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="mat-min-input">Stock Mínimo Requerido</label>
+            <input type="number" step="0.01" class="form-control" id="mat-min-input" placeholder="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="mat-provider-select">Proveedor Sugerido</label>
+          <select class="form-control" id="mat-provider-select">
+            <!-- JS populated -->
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-material">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-material">Guardar Material</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SOLICITAR ABASTECIMIENTO -->
+  <div class="modal-backdrop" id="modal-material-buy">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Orden de Compra / Abastecimiento</h3>
+        <button class="modal-close-btn" data-modal="modal-material-buy">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="buy-material-select">Material a Abastecer</label>
+          <select class="form-control" id="buy-material-select">
+            <!-- JS populated -->
+          </select>
+        </div>
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="buy-qty-input">Cantidad a Comprar</label>
+            <input type="number" step="0.01" class="form-control" id="buy-qty-input" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="buy-price-display">Precio Unitario Ref. ($)</label>
+            <input type="text" class="form-control" id="buy-price-display" readonly style="background-color: var(--border-color); cursor: not-allowed;">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="buy-total-display">Costo Estimado de la Compra ($)</label>
+          <input type="text" class="form-control" id="buy-total-display" readonly style="background-color: var(--border-color); font-weight: bold; cursor: not-allowed;">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="buy-provider-display">Proveedor</label>
+          <input type="text" class="form-control" id="buy-provider-display" readonly style="background-color: var(--border-color); cursor: not-allowed;">
+        </div>
+        <div class="form-group">
+          <div class="form-label" style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="checkbox" id="buy-create-payment-chk" checked>
+            <label for="buy-create-payment-chk">Generar solicitud de pago administrativa automáticamente</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-material-buy">Cancelar</button>
+        <button class="btn btn-primary" id="btn-execute-buy">Confirmar Compra</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AÑADIR PROVEEDOR -->
+  <div class="modal-backdrop" id="modal-provider">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Nuevo Proveedor</h3>
+        <button class="modal-close-btn" data-modal="modal-provider">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="prov-name-input">Nombre de la Empresa</label>
+          <input type="text" class="form-control" id="prov-name-input" placeholder="Ej. Aceros del Caribe, C.A.">
+        </div>
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="prov-rif-input">RIF / Registro Fiscal</label>
+            <input type="text" class="form-control" id="prov-rif-input" placeholder="Ej. J-12345678-9">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prov-category-input">Categoría / Especialidad</label>
+            <input type="text" class="form-control" id="prov-category-input" placeholder="Ej. Refrigeración, Agregados, Herrería">
+          </div>
+        </div>
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="prov-phone-input">Teléfono</label>
+            <input type="text" class="form-control" id="prov-phone-input" placeholder="+58 212-0000000">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prov-email-input">Correo Electrónico</label>
+            <input type="email" class="form-control" id="prov-email-input" placeholder="proveedor@empresa.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="prov-address-input">Dirección Comercial</label>
+          <input type="text" class="form-control" id="prov-address-input" placeholder="Ej. Zona Industrial, Caracas">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="prov-bank-input">Datos Bancarios de Transferencia / Pago Móvil</label>
+          <textarea class="form-control" id="prov-bank-input" rows="2" placeholder="Ej. Banesco Cta Corriente 0134-... RIF J-... Beneficiario: ..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-provider">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-provider">Guardar Proveedor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: NUEVA SOLICITUD DE PAGO -->
+  <div class="modal-backdrop" id="modal-payment">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Crear Solicitud de Pago</h3>
+        <button class="modal-close-btn" data-modal="modal-payment">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="pay-title-input">Concepto / Descripción del Pago</label>
+          <input type="text" class="form-control" id="pay-title-input" placeholder="Ej. Valuación Nro 3 - Revestimiento de Fachada">
+        </div>
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="pay-category-select">Categoría</label>
+            <select class="form-control" id="pay-category-select">
+              <option value="valuacion">Valuación de Obra (Mano de obra)</option>
+              <option value="material">Adquisición de Materiales</option>
+              <option value="proveedor">Equipamiento y Subcontratos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="pay-amount-input">Monto Solicitado ($)</label>
+            <input type="number" step="0.01" class="form-control" id="pay-amount-input" placeholder="0.00">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pay-provider-select">Proveedor / Contratista Destinatario</label>
+          <select class="form-control" id="pay-provider-select">
+            <!-- JS populated -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pay-bank-input">Datos Bancarios para Transferencia</label>
+          <textarea class="form-control" id="pay-bank-input" rows="2" placeholder="Datos de cuenta para realizar el pago..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pay-invoice-file">Foto de la Factura / Soporte Físico</label>
+          <input type="file" class="form-control" id="pay-invoice-file" accept="image/*">
+          <div id="pay-invoice-preview-container" style="display:none; margin-top: 0.5rem; text-align: center; border: 1px dashed var(--border-color); padding: 0.5rem; border-radius: var(--radius-md);">
+            <img id="pay-invoice-preview" style="max-width: 100%; max-height: 120px; border-radius: 6px; box-shadow: var(--shadow-sm);">
+            <button class="btn btn-secondary btn-sm" id="btn-remove-invoice-photo" style="display: block; margin: 0.5rem auto 0; padding: 0.2rem 0.5rem; font-size: 0.75rem;">Eliminar Foto</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pay-notes-input">Notas / Documento de Soporte</label>
+          <input type="text" class="form-control" id="pay-notes-input" placeholder="Ej. Factura Nro 993, Contrato de instalación...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-payment">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-payment">Registrar Solicitud</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIGURAR PROYECTO -->
+  <div class="modal-backdrop" id="modal-config">
+    <div class="modal-content" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Configuración del Proyecto
+        </h3>
+        <button class="modal-close-btn" data-modal="modal-config">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        <!-- General configs -->
+        <div class="form-group">
+          <label class="form-label" for="cfg-project-name">Nombre de la Obra</label>
+          <input type="text" class="form-control" id="cfg-project-name" placeholder="Ej. Mi Proyecto de Construcción">
+        </div>
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="cfg-user-name">Nombre del Responsable</label>
+            <input type="text" class="form-control" id="cfg-user-name" placeholder="Ej. Ing. Juan Pérez">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cfg-user-role">Cargo / Rol</label>
+            <input type="text" class="form-control" id="cfg-user-role" placeholder="Ej. Director de Obra">
+          </div>
+        </div>
+        
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1rem 0;">
+        
+        <!-- Telegram configs -->
+        <div class="form-group">
+          <div class="form-label" style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="checkbox" id="tel-enabled-chk">
+            <label for="tel-enabled-chk" style="font-weight: bold; color: var(--text-primary); cursor: pointer;">Habilitar alertas de Telegram automáticas</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="tel-token-input">Telegram Bot Token</label>
+          <input type="password" class="form-control" id="tel-token-input" placeholder="Token del bot generado por @BotFather">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="tel-chatid-input">Chat ID / ID de Grupo</label>
+          <input type="text" class="form-control" id="tel-chatid-input" placeholder="ID numérico del grupo de administración">
+        </div>
+        <button class="btn btn-secondary btn-sm" id="btn-test-telegram" style="margin-top: 0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          Probar Conexión de Telegram
+        </button>
+        <span id="telegram-test-status" style="font-size: 0.8rem; font-weight: 600; text-align: center; display: block; margin-top: 0.25rem;"></span>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1rem 0;">
+        
+        <!-- Danger zone configs -->
+        <div style="background-color: var(--danger-light); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid rgba(239, 68, 68, 0.2); display: flex; flex-direction: column; gap: 0.5rem;">
+          <strong style="color: var(--danger); font-size: 0.85rem;">Zona de Peligro</strong>
+          <span style="color: var(--text-secondary); font-size: 0.78rem;">Al hacer clic a continuación, se eliminarán permanentemente todas las partidas, cómputos métricos, proveedores y transacciones guardadas. Respáldalas primero si es necesario.</span>
+          <button class="btn btn-danger btn-sm" id="btn-reset-db" style="font-weight: bold; width: 100%;">Restablecer Base de Datos Completa</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-modal="modal-config">Cancelar</button>
+        <button class="btn btn-primary" id="btn-save-config">Guardar Configuración</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: VER FACTURA COMPLETA -->
+  <div class="modal-backdrop" id="modal-view-invoice">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Soporte / Factura Adjunta</h3>
+        <button class="modal-close-btn" data-modal="modal-view-invoice">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center; max-height: 75vh; overflow-y: auto;">
+        <img id="view-invoice-image-full" style="max-width: 100%; border-radius: 8px; box-shadow: var(--shadow-md);">
+        <p id="view-invoice-title" style="margin-top: 1rem; font-weight: 600; font-size: 0.95rem;"></p>
+        <p id="view-invoice-bank" style="font-size: 0.85rem; color: var(--text-secondary); background: var(--bg-input); padding: 0.75rem; border-radius: var(--radius-md); margin-top: 0.5rem; white-space: pre-line; border: 1px dashed var(--border-color);"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-modal="modal-view-invoice">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local Script -->
+  <script src="control_obra.js"></script>
+</body>
+</html>
